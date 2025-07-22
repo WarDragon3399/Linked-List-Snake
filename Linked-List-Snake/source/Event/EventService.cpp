@@ -1,80 +1,52 @@
-#include "Event/EventService.h"
+#include "Element/ElementService.h"
+#include "Level/LevelModel.h"
 #include "Global/ServiceLocator.h"
-#include "Graphics/GraphicService.h"
-#include <iostream>
+#include "Level/LevelController.h"
+#include "Element/Obstacle.h"
+#include "Level/LevelModel.h"
 
-namespace Event
+namespace Element
 {
-    using namespace Global;
-    using namespace Graphics;
+	ElementService::ElementService() = default;
 
-    EventService::EventService() { game_window = nullptr; }
+	ElementService::~ElementService() = default;
 
-    EventService::~EventService() = default;
+	void ElementService::initialize() {}
 
-    void EventService::initialize()
-    {
-        game_window = ServiceLocator::getInstance()->getGraphicService()->getGameWindow();
-    }
+	void ElementService::update()
+	{
+		for (int i = 0; i < obstacle_list.size(); i++)
+		{
+			obstacle_list[i]->update();
+		}
+	}
 
-    void EventService::update()
-    {
-        updateMouseButtonsState(left_mouse_button_state, sf::Mouse::Left);
-        updateMouseButtonsState(right_mouse_button_state, sf::Mouse::Right);
-    }
+	void ElementService::render()
+	{
+		for (int i = 0; i < obstacle_list.size(); i++)
+		{
+			obstacle_list[i]->render();
+		}
+	}
 
-    void EventService::processEvents()
-    {
-        if (isGameWindowOpen())
-        {
-            // Iterate over all events in the queue.
-            while (game_window->pollEvent(game_event))
-            {
-                if (gameWindowWasClosed() || hasQuitGame())
-                    game_window->close();
-            }
-        }
-    }
+	const void ElementService::spawnElements(std::vector<ElementData>& element_data_list, float cell_width, float cell_height)
+	{
+		for (int i = 0; i < element_data_list.size(); i++)
+		{
+			switch (element_data_list[i].element_type)
+			{
+			case::Element::ElementType::OBSTACLE:
+				spawnObstacle(element_data_list[i].position, cell_width, cell_height);
+				break;
+			}
+		}
+	}
 
-    void EventService::updateMouseButtonsState(ButtonState& current_button_state, sf::Mouse::Button mouse_button)
-    {
-        if (sf::Mouse::isButtonPressed(mouse_button))
-        {
-            switch (current_button_state)
-            {
-            case ButtonState::RELEASED:
-                current_button_state = ButtonState::PRESSED;
-                break;
-            case ButtonState::PRESSED:
-                current_button_state = ButtonState::HELD;
-                break;
-            }
-        }
-        else
-        {
-            current_button_state = ButtonState::RELEASED;
-        }
-    }
+	void ElementService::spawnObstacle(sf::Vector2i position, float cell_width, float cell_height)
+	{
+		Obstacle* obstacle = new Obstacle();
 
-    bool EventService::isGameWindowOpen() { return game_window != nullptr; }
-
-    bool EventService::gameWindowWasClosed() { return game_event.type == sf::Event::Closed; }
-
-    bool EventService::hasQuitGame() { return (isKeyboardEvent() && pressedEscapeKey()); }
-
-    bool EventService::isKeyboardEvent() { return game_event.type == sf::Event::KeyPressed; }
-
-    bool EventService::pressedEscapeKey() { return game_event.key.code == sf::Keyboard::Escape; }
-
-    bool EventService::pressedLeftArrowKey() { return (isKeyboardEvent() && game_event.key.code == sf::Keyboard::Left); }
-
-    bool EventService::pressedRightArrowKey() { return  (isKeyboardEvent() && game_event.key.code == sf::Keyboard::Right); }
-
-    bool EventService::pressedUpArrowKey() { return  (isKeyboardEvent() && game_event.key.code == sf::Keyboard::Up); }
-
-    bool EventService::pressedDownArrowKey() { return  (isKeyboardEvent() && game_event.key.code == sf::Keyboard::Down); }
-
-    bool EventService::pressedLeftMouseButton() { return left_mouse_button_state == ButtonState::PRESSED; }
-
-    bool EventService::pressedRightMouseButton() { return right_mouse_button_state == ButtonState::PRESSED; }
+		obstacle->initialize(position, cell_width, cell_height);
+		obstacle_list.push_back(obstacle);
+	}
 }
