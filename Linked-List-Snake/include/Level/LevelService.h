@@ -1,6 +1,6 @@
 #pragma once
-#include "Level/LevelController.h"
-#include "Level/LevelNumber.h"
+#include "LevelNumber.h"
+
 namespace Level
 {
     class LevelController;
@@ -12,6 +12,8 @@ namespace Level
         LevelNumber current_level;
 
         void createLevelController();
+        void spawnPlayer();
+        void spawnLevelElements(LevelNumber level_to_load);
         void destroy();
 
     public:
@@ -23,5 +25,7 @@ namespace Level
         void render();
 
         void createLevel(LevelNumber level_to_load);
+        float getCellWidth();
+        float getCellHeight();
     };
 }
