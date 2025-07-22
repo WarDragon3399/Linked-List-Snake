@@ -1,62 +1,29 @@
 #pragma once
-#include <SFML/System/Vector2.hpp>
-#include "LinkedList/Node.h"
-#include "LinkedList/SingleLinkedList.h"
-#include "LinkedList/SingleLinkedList.h"
+#include "SFML/Audio.hpp"
 
-namespace Player
+namespace Sound
 {
-	enum class SnakeState
+	enum class SoundType
 	{
-		ALIVE,
-		DEAD,
+		BUTTON_CLICK,
 	};
 
-	enum class InputState
-	{
-		WAITING,
-		PROCESSING
-	};
-
-	class SnakeController
+	class SoundService
 	{
 	private:
-		const int initial_snake_length = 10;
-		const float movement_frame_duration = 0.1f;
-		const float restart_duration = 3.f;
+		const int background_music_volume = 30;
 
-		const sf::Vector2i default_position = sf::Vector2i(25, 13);
-		const LinkedList::Direction default_direction = LinkedList::Direction::RIGHT;
+		sf::Music background_music;
+		sf::Sound sound_effect;
+		sf::SoundBuffer buffer_button_click;
 
-		SnakeState current_snake_state;
-		float elapsed_duration;
-		float restart_counter;
-		LinkedList::Direction current_snake_direction;
-		InputState current_input_state;
-
-		LinkedList::SingleLinkedList* single_linked_list;
-
-		void createLinkedList();
-		void processPlayerInput();
-		void updateSnakeDirection();
-		void delayedUpdate();
-		void moveSnake();
-		void processSnakeCollision();
-		void handleRestart();
-		void reset();
-		void destroy();
+		void loadBackgroundMusicFromFile();
+		void loadSoundFromFile();
 
 	public:
-		SnakeController();
-		~SnakeController();
-
 		void initialize();
-		void update();
-		void render();
 
-		void spawnSnake();
-		void respawnSnake();
-		void setSnakeState(SnakeState state);
-		SnakeState getSnakeState();
+		void playSound(SoundType soundType);
+		void playBackgroundMusic();
 	};
 }
