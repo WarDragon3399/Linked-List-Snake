@@ -4,7 +4,6 @@
 #include "Level/LevelController.h"
 #include "Element/Obstacle.h"
 #include "Level/LevelModel.h"
-#include "Global/Config.h"
 #include "Element/ElementData.h"
 
 namespace Element

@@ -3,11 +3,13 @@
 #include "Global/ServiceLocator.h"
 #include "Element/ElementService.h"
 #include "Level/LevelModel.h"
+#include "Element/ElementData.h"
+
 
 namespace Level
 {
 	using namespace Global;
-	//using namespace Element;
+	using namespace Element;
 
 	LevelService::LevelService()
 	{
