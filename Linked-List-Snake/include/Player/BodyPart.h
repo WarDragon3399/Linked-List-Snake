@@ -41,4 +41,4 @@ namespace Player
 		sf::Vector2i getPosition();
 		sf::Vector2i getNextPosition();
 	};
-}#pragma once
+}
